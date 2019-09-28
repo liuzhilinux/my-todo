@@ -20,5 +20,7 @@
 ## 参见
 
 1. [Node.js 入门 - 写代码啦！](https://xiedaimala.com/courses/75e749fb-909e-4e10-9212-b6e725a6d35f#/common "Node.js 入门 - 写代码啦！")
-2. 
+2. [Node.js 官方英文文档](https://nodejs.org/en/docs/ "DOCS | Node.js")
+3. [Node.js 中文文档](http://nodejs.cn/api/ "API 文档 | Node.js 中文网")
+4. 
 
