@@ -8,6 +8,7 @@
     const verb = argv[2];
     const n = parseInt(argv[3]) - 1;
     const content = argv[3];
+    const n1 = parseInt(argv[4]);
     const content1 = argv[4];
 
     var list = [];
@@ -30,7 +31,30 @@
             del(n);
             break;
 
+        case 'edit':
 
+            break;
+
+        case 'undone':
+
+            break;
+
+        case 'moveup':
+
+            break;
+
+        case 'movedown':
+
+            break;
+
+        case 'clearall':
+
+            break;
+
+        default:
+            console.log('你的动作是： ' + verb);
+            console.log('我不知道你想干什么~');
+            break;
     }
 
     if ('list' !== verb) save();
