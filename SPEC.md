@@ -18,6 +18,7 @@ todo <operation> [arg1 arg2]
     undone n               # 标记第 n 条任务为未完成
     moveup n [step=1]      # 向上移动 step 步第 n 条任务
     movedown n [step=1]    # 向下移动 step 步第 n 条任务
+    clearall               # 清空列表
 ```
 
 说明：
@@ -25,6 +26,7 @@ todo <operation> [arg1 arg2]
 1. 如果使用命令 `todo edit n` 后面未接上要编辑的内容时，则执行命令时会询问你输入要编辑的内容。
 2. 当使用命令 `todo moveup n` 向上移动任务的距离超过第一条任务的时候，则这条任务将被移动到第一条。
 3. 当使用命令 `todo movedown n` 向下移动任务的距离超过最后一条任务的时候，则这条任务将被移动到最后一条。
+4. 删除、标记为完成、标记为未完成、编辑等，当输入的任务编号对应任务不存在，则不做任何操作。
 
 
 

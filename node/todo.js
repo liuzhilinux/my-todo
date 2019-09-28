@@ -6,6 +6,7 @@
     const dbPath = __dirname + path.sep + 'db';
 
     const verb = argv[2];
+    const n = parseInt(argv[3]) - 1;
     const content = argv[3];
     const content1 = argv[4];
 
@@ -16,13 +17,29 @@
     switch (verb) {
         case 'add':
             add(content);
-            save();
-            display();
             break;
+
+        case 'list':
+            break;
+
+        case 'done':
+            done(n);
+            break;
+
+        case 'delete':
+            del(n);
+            break;
+
 
     }
 
+    if ('list' !== verb) save();
+
+    display();
+
+
     /* ================ helper ================ */
+
 
     function init() {
         if (fs.existsSync(dbPath)) {
@@ -58,4 +75,11 @@
         list.push({content, status: false});
     }
 
+    function done(n) {
+        if (list[n]) list[n].status = true;
+    }
+
+    function del(n) {
+        if (list[n]) list.splice(n, 1);
+    }
 })();
