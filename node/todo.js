@@ -32,7 +32,7 @@
             break;
 
         case 'edit':
-
+            edit(n, content);
             break;
 
         case 'undone':
@@ -96,14 +96,33 @@
     }
 
     function add(content) {
+        if (typeof content === 'undefined') {
+            console.log('输入的内容为空.');
+            process.exit(0);
+        }
+
         list.push({content, status: false});
     }
 
     function done(n) {
+        if (Number.isNaN(n)) {
+            console.log('未指定需要被标记为完成的任务序号.');
+            process.exit(0);
+        }
+
         if (list[n]) list[n].status = true;
     }
 
     function del(n) {
+        if (Number.isNaN(n)) {
+            console.log('未指定需要被删除的任务序号.');
+            process.exit(0);
+        }
+
         if (list[n]) list.splice(n, 1);
+    }
+
+    function edit(n, content) {
+        
     }
 })();
