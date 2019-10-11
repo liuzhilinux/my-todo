@@ -74,7 +74,6 @@
             noAction = true;
             console.log(tips.your_verb_is + verb);
             console.log(tips.i_dont_know_what_your_want);
-            console.log('');
             break;
     }
 
@@ -105,6 +104,7 @@
     }
 
     function display() {
+        console.log('');
         let idxLen = String(list.length).length;
         list.forEach((item, idx) => {
             idx = String(idx + 1);
@@ -117,105 +117,90 @@
     }
 
     function add(content) {
+        if (checkContent(content)) list.push({content, status: false});
+    }
+
+    function done(n) {
+        if (checkNum(n) && checkTaskExist(n, list)) list[n].status = true;
+    }
+
+    function del(n) {
+        if (checkNum(n) && checkTaskExist(n, list)) list.splice(n, 1);
+    }
+
+    async function edit(n, content) {
+        if (checkNum(n) && checkTaskExist(n, list)) {
+            const task = list[n];
+
+            if (typeof content === 'undefined') {
+                console.log(tips.origin_content_is, task.content);
+                task.content = await ask(tips.please_input_content);
+            } else {
+                task.content = content;
+            }
+        }
+    }
+
+    function undone(n) {
+        if (checkNum(n) && checkTaskExist(n, list)) list[n].status = false;
+    }
+
+    function moveup(n, n1) {
+        if (checkNum(n) && checkStep(n1) && checkTaskExist(n, list)) {
+            let idx = n - n1;
+            idx = idx < 0 ? 0 : idx;
+            let task = list.splice(n, 1);
+            list.splice(idx, 0, ...task);
+        }
+    }
+
+    function movedown(n, n1) {
+        if (checkNum(n) && checkStep(n1) && checkTaskExist(n, list)) {
+            let idx = n + n1;
+            idx = idx > list.length ? list.length : idx;
+            let task = list.splice(n, 1);
+            list.splice(idx, 0, ...task);
+        }
+    }
+
+
+    /* ================ common func ================ */
+
+
+    function checkContent(content) {
         if (typeof content === 'undefined') {
             console.log(tips.no_content_err);
             process.exit(0);
         }
 
-        list.push({content, status: false});
+        return true;
     }
 
-    function done(n) {
+    function checkNum(n) {
         if (Number.isNaN(n)) {
             console.log(tips.num_err);
             process.exit(0);
         }
 
-        if (list[n]) list[n].status = true;
+        return true;
     }
 
-    function del(n) {
-        if (Number.isNaN(n)) {
-            console.log(tips.num_err);
-            process.exit(0);
-        }
-
-        if (list[n]) list.splice(n, 1);
-    }
-
-    async function edit(n, content) {
-        if (Number.isNaN(n)) {
-            console.log(tips.num_err);
-            process.exit(0);
-        }
-
-        const task = list[n];
-
-        if (typeof task === 'undefined') {
-            console.log(tips.task_no_exist_err);
-            process.exit(0);
-        }
-
-        if (typeof content === 'undefined') {
-            console.log(tips.origin_content_is, task.content);
-            task.content = await ask(tips.please_input_content);
-            console.log('');
-        } else {
-            task.content = content;
-        }
-    }
-
-    function undone(n) {
-        if (Number.isNaN(n)) {
-            console.log(tips.num_err);
-            process.exit(0);
-        }
-
-        if (list[n]) list[n].status = false;
-    }
-
-    function moveup(n, n1) {
-        if (Number.isNaN(n)) {
-            console.log(tips.num_err);
-            process.exit(0);
-        }
-
-        if (Number.isNaN(n1)) {
-            console.log(tips.step_err);
-            process.exit(0);
-        }
-
+    function checkTaskExist(n, list) {
         if (typeof list[n] === 'undefined') {
             console.log(tips.task_no_exist_err);
             process.exit(0);
         }
 
-        let idx = n - n1;
-        idx = idx < 0 ? 0 : idx;
-        let task = list.splice(n, 1);
-        list.splice(idx, 0, ...task);
+        return true;
     }
 
-    function movedown(n, n1) {
-        if (Number.isNaN(n)) {
-            console.log(tips.num_err);
-            process.exit(0);
-        }
-
+    function checkStep(n1) {
         if (Number.isNaN(n1)) {
             console.log(tips.step_err);
             process.exit(0);
         }
 
-        if (typeof list[n] === 'undefined') {
-            console.log(tips.task_no_exist_err);
-            process.exit(0);
-        }
-
-        let idx = n + n1;
-        idx = idx > list.length ? list.length : idx;
-        let task = list.splice(n, 1);
-        list.splice(idx, 0, ...task);
+        return true;
     }
 
     function ask(question) {
