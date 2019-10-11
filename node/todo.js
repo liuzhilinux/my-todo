@@ -42,7 +42,7 @@
             break;
 
         case 'undone':
-
+            undone(n);
             break;
 
         case 'moveup':
@@ -148,6 +148,15 @@
         } else {
             task.content = content;
         }
+    }
+
+    function undone(n) {
+        if (Number.isNaN(n)) {
+            console.log('未指定需要被标记为未完成的任务序号.');
+            process.exit(0);
+        }
+
+        if (list[n]) list[n].status = false;
     }
 
     function question(query) {
