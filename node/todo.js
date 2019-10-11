@@ -13,6 +13,17 @@
     const n1 = parseInt(argv[4]);
     const content1 = argv[4];
 
+    const tips = {
+        no_content_err: '请填写任务内容。',
+        task_no_exist_err: '任务不存在。',
+        num_err: '清输入合法的任务序号。',
+        step_err: '清输入合法的移动步数。',
+        origin_content_is: '原内容是：',
+        please_input_content: '请输入要修改的内容：',
+        your_verb_is: '你的动作是： ',
+        i_dont_know_what_your_want: '我不知道你想干什么~',
+    };
+
     var list = [];
 
     init();
@@ -46,7 +57,7 @@
             break;
 
         case 'moveup':
-
+            moveup(n, n1);
             break;
 
         case 'movedown':
@@ -58,8 +69,8 @@
             break;
 
         default:
-            console.log('你的动作是： ' + verb);
-            console.log('我不知道你想干什么~');
+            console.log(tips.your_verb_is + verb);
+            console.log(tips.i_dont_know_what_your_want);
             break;
     }
 
@@ -103,7 +114,7 @@
 
     function add(content) {
         if (typeof content === 'undefined') {
-            console.log('输入的内容为空.');
+            console.log(tips.no_content_err);
             process.exit(0);
         }
 
@@ -112,7 +123,7 @@
 
     function done(n) {
         if (Number.isNaN(n)) {
-            console.log('未指定需要被标记为完成的任务序号.');
+            console.log(tips.num_err);
             process.exit(0);
         }
 
@@ -121,7 +132,7 @@
 
     function del(n) {
         if (Number.isNaN(n)) {
-            console.log('未指定需要被删除的任务序号.');
+            console.log(tips.num_err);
             process.exit(0);
         }
 
@@ -130,21 +141,21 @@
 
     async function edit(n, content) {
         if (Number.isNaN(n)) {
-            console.log('未指定需要被编辑的任务序号.');
+            console.log(tips.num_err);
             process.exit(0);
         }
 
         const task = list[n];
 
         if (typeof task === 'undefined') {
-            console.log('要编辑的任务不存在.');
+            console.log(tips.task_no_exist_err);
             process.exit(0);
         }
 
         if (typeof content === 'undefined') {
-            console.log('原内容是：', task.content);
-            task.content = await question('请输入要修改的内容：');
-            console.log(task.content);
+            console.log(tips.origin_content_is, task.content);
+            task.content = await ask(tips.please_input_content);
+            console.log('');
         } else {
             task.content = content;
         }
@@ -152,19 +163,40 @@
 
     function undone(n) {
         if (Number.isNaN(n)) {
-            console.log('未指定需要被标记为未完成的任务序号.');
+            console.log(tips.num_err);
             process.exit(0);
         }
 
         if (list[n]) list[n].status = false;
     }
 
-    function question(query) {
+    function moveup(n, n1) {
+        if (Number.isNaN(n)) {
+            console.log(tips.num_err);
+            process.exit(0);
+        }
+
+        if (Number.isNaN(n1)) {
+            console.log(tips.step_err);
+            process.exit(0);
+        }
+
+        if (typeof list[n] === 'undefined') {
+
+        }
+
+        let idx = n - n1;
+        idx = idx < 0 ? 0 : idx;
+        let task = list.splice(n, 1);
+        list.splice(idx, 0, ...task);
+    }
+
+    function ask(question) {
         return new Promise(resolve => {
             const rl = readline.createInterface({
                 input: process.stdin,
                 output: process.stdout,
-                prompt: query
+                prompt: question
             });
 
             rl.prompt();
