@@ -26,6 +26,8 @@
 
     var list = [];
 
+    var noAction = false;
+
     init();
 
     switch (verb) {
@@ -61,7 +63,7 @@
             break;
 
         case 'movedown':
-
+            movedown(n, n1);
             break;
 
         case 'clearall':
@@ -69,12 +71,14 @@
             break;
 
         default:
+            noAction = true;
             console.log(tips.your_verb_is + verb);
             console.log(tips.i_dont_know_what_your_want);
+            console.log('');
             break;
     }
 
-    if (!['list', 'edit'].includes(verb)) save();
+    if (!['list', 'edit'].includes(verb) && !noAction) save();
 
     if (!['edit'].includes(verb)) display();
 
@@ -182,11 +186,34 @@
         }
 
         if (typeof list[n] === 'undefined') {
-
+            console.log(tips.task_no_exist_err);
+            process.exit(0);
         }
 
         let idx = n - n1;
         idx = idx < 0 ? 0 : idx;
+        let task = list.splice(n, 1);
+        list.splice(idx, 0, ...task);
+    }
+
+    function movedown(n, n1) {
+        if (Number.isNaN(n)) {
+            console.log(tips.num_err);
+            process.exit(0);
+        }
+
+        if (Number.isNaN(n1)) {
+            console.log(tips.step_err);
+            process.exit(0);
+        }
+
+        if (typeof list[n] === 'undefined') {
+            console.log(tips.task_no_exist_err);
+            process.exit(0);
+        }
+
+        let idx = n + n1;
+        idx = idx > list.length ? list.length : idx;
         let task = list.splice(n, 1);
         list.splice(idx, 0, ...task);
     }
