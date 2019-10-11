@@ -22,6 +22,7 @@
         please_input_content: '请输入要修改的内容：',
         your_verb_is: '你的动作是： ',
         i_dont_know_what_your_want: '我不知道你想干什么~',
+        are_you_sure_clear_all: '确认清空所有任务吗？[Y/n]',
     };
 
     var list = [];
@@ -67,7 +68,10 @@
             break;
 
         case 'clearall':
-
+            (async () => {
+                await clearall();
+                save();
+            })();
             break;
 
         default:
@@ -77,9 +81,9 @@
             break;
     }
 
-    if (!['list', 'edit'].includes(verb) && !noAction) save();
+    if (!['list', 'edit', 'clearall'].includes(verb) && !noAction) save();
 
-    if (!['edit'].includes(verb)) display();
+    if (!['edit', 'clearall'].includes(verb)) display();
 
 
     /* ================ helper ================ */
@@ -163,6 +167,17 @@
         }
     }
 
+    async function clearall() {
+        let answer = await ask(tips.are_you_sure_clear_all);
+
+        answer = answer.toLowerCase();
+
+        if (['n', 'no'].includes(answer)) return false;
+        else if (['y', 'yes'].includes(answer)) {
+            list = [];
+            return true;
+        }
+    }
 
     /* ================ common func ================ */
 
