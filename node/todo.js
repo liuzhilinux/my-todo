@@ -1,6 +1,8 @@
 (function () {
     const fs = require('fs');
     const path = require('path');
+    const readline = require('readline');
+
     const argv = process.argv;
 
     const dbPath = __dirname + path.sep + 'db';
@@ -32,7 +34,11 @@
             break;
 
         case 'edit':
-            edit(n, content);
+            (async () => {
+                await edit(n, content1);
+                save();
+                display();
+            })();
             break;
 
         case 'undone':
@@ -57,9 +63,9 @@
             break;
     }
 
-    if ('list' !== verb) save();
+    if (!['list', 'edit'].includes(verb)) save();
 
-    display();
+    if (!['edit'].includes(verb)) display();
 
 
     /* ================ helper ================ */
@@ -122,7 +128,45 @@
         if (list[n]) list.splice(n, 1);
     }
 
-    function edit(n, content) {
-        
+    async function edit(n, content) {
+        if (Number.isNaN(n)) {
+            console.log('未指定需要被编辑的任务序号.');
+            process.exit(0);
+        }
+
+        const task = list[n];
+
+        if (typeof task === 'undefined') {
+            console.log('要编辑的任务不存在.');
+            process.exit(0);
+        }
+
+        if (typeof content === 'undefined') {
+            console.log('原内容是：', task.content);
+            task.content = await question('请输入要修改的内容：');
+            console.log(task.content);
+        } else {
+            task.content = content;
+        }
+    }
+
+    function question(query) {
+        return new Promise(resolve => {
+            const rl = readline.createInterface({
+                input: process.stdin,
+                output: process.stdout,
+                prompt: query
+            });
+
+            rl.prompt();
+
+            rl.on('line', (line) => {
+                if (0 === line.length) rl.prompt();
+                else {
+                    resolve(line);
+                    rl.close();
+                }
+            });
+        });
     }
 })();
