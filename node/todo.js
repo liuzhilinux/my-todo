@@ -89,6 +89,9 @@
     /* ================ helper ================ */
 
 
+    /**
+     * 初始化。
+     */
     function init() {
         if (fs.existsSync(dbPath)) {
             list = fs.readFileSync(dbPath, {encoding: 'utf8'});
@@ -103,12 +106,19 @@
         }
     }
 
+    /**
+     * 保存数据。
+     */
     function save() {
         fs.writeFileSync(dbPath, JSON.stringify(list));
     }
 
+    /**
+     * 显示任务列表。
+     */
     function display() {
         console.log('');
+        // 保证列表中每一项任务的完成标记对齐。
         let idxLen = String(list.length).length;
         list.forEach((item, idx) => {
             idx = String(idx + 1);
@@ -120,18 +130,36 @@
         });
     }
 
+    /**
+     * 添加任务。
+     * @param content 任务内容。
+     */
     function add(content) {
         if (checkContent(content)) list.push({content, status: false});
     }
 
+    /**
+     * 标记任务为完成。
+     * @param n 要标记的任务序号。
+     */
     function done(n) {
         if (checkNum(n) && checkTaskExist(n, list)) list[n].status = true;
     }
 
+    /**
+     * 删除任务。
+     * @param n 要删除的任务序号。
+     */
     function del(n) {
         if (checkNum(n) && checkTaskExist(n, list)) list.splice(n, 1);
     }
 
+    /**
+     * 编辑任务内容，如果命令行参数里面没有带任务内容，则后续过程中询问内容。
+     * @param n 要编辑的任务序号。
+     * @param content 命令行参数中获取到的任务内容。
+     * @return {Promise<void>}
+     */
     async function edit(n, content) {
         if (checkNum(n) && checkTaskExist(n, list)) {
             const task = list[n];
@@ -145,10 +173,19 @@
         }
     }
 
+    /**
+     * 标记任务为已完成。
+     * @param n 要标记为完成的任务序号。
+     */
     function undone(n) {
         if (checkNum(n) && checkTaskExist(n, list)) list[n].status = false;
     }
 
+    /**
+     * 向上移动任务。
+     * @param n 要向上移动的任务序号。
+     * @param n1 要移动的步数。
+     */
     function moveup(n, n1) {
         if (checkNum(n) && checkStep(n1) && checkTaskExist(n, list)) {
             let idx = n - n1;
@@ -158,6 +195,11 @@
         }
     }
 
+    /**
+     * 向下移动任务。
+     * @param n 要向下移动的任务序号。
+     * @param n1 要移动的步数。
+     */
     function movedown(n, n1) {
         if (checkNum(n) && checkStep(n1) && checkTaskExist(n, list)) {
             let idx = n + n1;
@@ -167,6 +209,10 @@
         }
     }
 
+    /**
+     * 清除所有任务。
+     * @return {Promise<boolean>}
+     */
     async function clearall() {
         let answer = await ask(tips.are_you_sure_clear_all);
 
@@ -179,9 +225,15 @@
         }
     }
 
+
     /* ================ common func ================ */
 
 
+    /**
+     * 检查任务内容是否填写。
+     * @param content 任务内容。
+     * @return {boolean} true
+     */
     function checkContent(content) {
         if (typeof content === 'undefined') {
             console.log(tips.no_content_err);
@@ -191,6 +243,11 @@
         return true;
     }
 
+    /**
+     * 检查任务序号是否合法。
+     * @param n 任务序号。
+     * @return {boolean} true
+     */
     function checkNum(n) {
         if (Number.isNaN(n)) {
             console.log(tips.num_err);
@@ -200,6 +257,12 @@
         return true;
     }
 
+    /**
+     * 检查列表中是否存在对应序号的任务。
+     * @param n 任务序号。
+     * @param list 任务列表。
+     * @return {boolean} true
+     */
     function checkTaskExist(n, list) {
         if (typeof list[n] === 'undefined') {
             console.log(tips.task_no_exist_err);
@@ -209,6 +272,11 @@
         return true;
     }
 
+    /**
+     * 检查移动步数是否合法。
+     * @param n1 移动步数。
+     * @return {boolean} true
+     */
     function checkStep(n1) {
         if (Number.isNaN(n1)) {
             console.log(tips.step_err);
@@ -218,6 +286,11 @@
         return true;
     }
 
+    /**
+     * 命令行提问互动。
+     * @param question 问题。
+     * @return {Promise<Promise>}  异步 Promise 对象。
+     */
     function ask(question) {
         return new Promise(resolve => {
             const rl = readline.createInterface({
