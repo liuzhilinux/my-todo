@@ -22,7 +22,7 @@
         please_input_content: '请输入要修改的内容：',
         your_verb_is: '你的动作是： ',
         i_dont_know_what_your_want: '我不知道你想干什么~',
-        are_you_sure_clear_all: '确认清空所有任务吗？[Y/n]',
+        are_you_sure_clear_all: '确认清空所有任务吗？[N/y]',
     };
 
     var list = [];
