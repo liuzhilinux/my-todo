@@ -86,7 +86,8 @@ class Todo
      */
     public function __destruct()
     {
-        $this->display();
+        if (!in_array($this->verb, ['list', 'clearall'])) $this->save();
+        if (!in_array($this->verb, ['clearall'])) $this->display();
     }
 
     /**
