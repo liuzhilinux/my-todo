@@ -124,17 +124,30 @@ class Todo
 
     private function save()
     {
-
+        $list = json_encode($this->list, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $handle = fopen($this->dbPath, 'w');
+        fwrite($handle, $list);
     }
 
     private function display()
     {
+        echo "\n";
+        // 保证列表中每一项任务的完成标记对齐。
+        $list = $this->list;
+        $idxLen = strlen(strval(count($list)));
+        foreach ($list as $idx => $item) {
+            $idx = strval($idx + 1);
+            $space = str_repeat(' ', $idxLen - strlen($idx));
+            $status = $item['status'] ? '[x]' : '[_]';
+            $content = $item['content'];
 
+            echo $space, $idx, '. ', $status, ' ', $content, "\n";
+        }
     }
 
     private function add()
     {
-
+        $this->list[] = ['content' => $this->content, 'status' => false];
     }
 
     private function done()
