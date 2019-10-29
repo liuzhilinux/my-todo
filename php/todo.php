@@ -122,6 +122,9 @@ class Todo
         }
     }
 
+    /**
+     * 保存数据到数据库。
+     */
     private function save()
     {
         $list = json_encode($this->list, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -129,6 +132,9 @@ class Todo
         fwrite($handle, $list);
     }
 
+    /**
+     * 显示任务列表。
+     */
     private function display()
     {
         echo "\n";
@@ -145,9 +151,16 @@ class Todo
         }
     }
 
+    /**
+     * 添加任务。
+     */
     private function add()
     {
-        $this->list[] = ['content' => $this->content, 'status' => false];
+        $content = $this->content;
+
+        if ($this->checkContent($content)) {
+            $this->list[] = ['content' => $content, 'status' => false];
+        }
     }
 
     private function done()
@@ -183,5 +196,69 @@ class Todo
     private function clearall()
     {
 
+    }
+
+    /**
+     * 检查任务内容是否填写。
+     *
+     * @param string $content 任务内容。
+     *
+     * @return bool true
+     */
+    private function checkContent($content)
+    {
+        if (empty($content)) {
+            exit($this->tips['no_content_err']);
+        }
+
+        return true;
+    }
+
+    /**
+     * 检查任务序号是否合法。
+     *
+     * @param int $n 任务序号。
+     *
+     * @return bool true
+     */
+    private function checkNum($n)
+    {
+        if (empty($n) || is_nan($n)) {
+            exit($this->tips['num_err']);
+        }
+
+        return true;
+    }
+
+    /**
+     * 检查列表中是否存在对应序号的任务。
+     *
+     * @param int $n      任务序号。
+     * @param array $list 任务列表。
+     *
+     * @return bool true
+     */
+    private function checkTaskExist($n, $list)
+    {
+        if (!array_key_exists($n, $list)) {
+            exit($this->tips['task_no_exist_err']);
+        }
+
+        return true;
+    }
+
+    /**
+     * 检查移动步数是否合法。
+     * @param int $n1 移动步数。
+     *
+     * @return bool true
+     */
+    private function checkStep($n1)
+    {
+        if (empty($n1) || is_nan($n1)) {
+            exit($this->tips['step_err']);
+        }
+
+        return true;
     }
 }
