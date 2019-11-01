@@ -63,6 +63,11 @@ class Todo
     private $noAction = false;
 
     /**
+     * @var bool 命令行的输入参数是否验证通过，当输入有误的情况下，不打印列表，不保存列表。
+     */
+    private $validated = true;
+
+    /**
      * 构造对象、初始化并调用指令。
      * Ｔｏｄｏ constructor.
      */
@@ -86,8 +91,10 @@ class Todo
      */
     public function __destruct()
     {
-        if (!in_array($this->verb, ['list', 'clearall'])) $this->save();
-        if (!in_array($this->verb, ['clearall'])) $this->display();
+        if ($this->validated) {
+            if (!in_array($this->verb, ['list', 'clearall'])) $this->save();
+            if (!in_array($this->verb, ['clearall'])) $this->display();
+        }
     }
 
     /**
@@ -163,9 +170,15 @@ class Todo
         }
     }
 
+    /**
+     * 标记任务为完成。
+     */
     private function done()
     {
-
+        $n = $this->n;
+        if ($this->checkNum($n) && $this->checkTaskExist($n, $this->list)) {
+            $this->list[$n]['status'] = true;
+        }
     }
 
     private function delete()
@@ -178,9 +191,15 @@ class Todo
 
     }
 
+    /**
+     * 标记任务为已完成。
+     */
     private function undone()
     {
-
+        $n = $this->n;
+        if ($this->checkNum($n) && $this->checkTaskExist($n, $this->list)) {
+            $this->list[$n]['status'] = false;
+        }
     }
 
     private function moveup()
@@ -208,7 +227,8 @@ class Todo
     private function checkContent($content)
     {
         if (empty($content)) {
-            exit($this->tips['no_content_err']);
+            $this->validated = false;
+            exit($this->tips['no_content_err'] . "\n");
         }
 
         return true;
@@ -224,7 +244,8 @@ class Todo
     private function checkNum($n)
     {
         if (empty($n) || is_nan($n)) {
-            exit($this->tips['num_err']);
+            $this->validated = false;
+            exit($this->tips['num_err'] . "\n");
         }
 
         return true;
@@ -241,7 +262,8 @@ class Todo
     private function checkTaskExist($n, $list)
     {
         if (!array_key_exists($n, $list)) {
-            exit($this->tips['task_no_exist_err']);
+            $this->validated = false;
+            exit($this->tips['task_no_exist_err'] . "\n");
         }
 
         return true;
@@ -249,6 +271,7 @@ class Todo
 
     /**
      * 检查移动步数是否合法。
+     *
      * @param int $n1 移动步数。
      *
      * @return bool true
@@ -256,7 +279,8 @@ class Todo
     private function checkStep($n1)
     {
         if (empty($n1) || is_nan($n1)) {
-            exit($this->tips['step_err']);
+            $this->validated = false;
+            exit($this->tips['step_err'] . "\n");
         }
 
         return true;
