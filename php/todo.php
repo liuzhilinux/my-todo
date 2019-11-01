@@ -226,19 +226,53 @@ class Todo
         }
     }
 
+    /**
+     * 向上移动任务。
+     */
     private function moveup()
     {
-
+        $n = $this->n;
+        $n1 = $this->n1;
+        if ($this->checkNum($n) && $this->checkStep($n1) && $this->checkTaskExist($n, $this->list)) {
+            $idx = $n - $n1;
+            $idx = $idx < 0 ? 0 : $idx;
+            $tasks = array_splice($this->list, $n, 1);
+            array_splice($this->list, $idx, 0, $tasks);
+        }
     }
 
+    /**
+     * 向下移动任务。
+     */
     private function movedown()
     {
-
+        $n = $this->n;
+        $n1 = $this->n1;
+        if ($this->checkNum($n) && $this->checkStep($n1) && $this->checkTaskExist($n, $this->list)) {
+            $idx = $n + $n1;
+            $listLen = count($this->list);
+            $idx = $idx > $listLen ? $listLen : $idx;
+            $tasks = array_splice($this->list, $n, 1);
+            array_splice($this->list, $idx, 0, $tasks);
+        }
     }
 
+    /**
+     * 清除所有任务。
+     */
     private function clearall()
     {
+        do {
+            echo $this->tips['are_you_sure_clear_all'];
+        } while (mb_strlen($line = trim(fgets(STDIN))) === 0);
 
+        $line = strtolower($line);
+
+        if (in_array($line, ['n', 'no'])) return;
+        else if (in_array($line, ['y', 'yes'])) {
+            $this->list = [];
+            $this->save();
+        }
     }
 
     /**

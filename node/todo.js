@@ -190,8 +190,8 @@
         if (checkNum(n) && checkStep(n1) && checkTaskExist(n, list)) {
             let idx = n - n1;
             idx = idx < 0 ? 0 : idx;
-            let task = list.splice(n, 1);
-            list.splice(idx, 0, ...task);
+            let tasks = list.splice(n, 1);
+            list.splice(idx, 0, ...tasks);
         }
     }
 
@@ -204,8 +204,8 @@
         if (checkNum(n) && checkStep(n1) && checkTaskExist(n, list)) {
             let idx = n + n1;
             idx = idx > list.length ? list.length : idx;
-            let task = list.splice(n, 1);
-            list.splice(idx, 0, ...task);
+            let tasks = list.splice(n, 1);
+            list.splice(idx, 0, ...tasks);
         }
     }
 
