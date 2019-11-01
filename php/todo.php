@@ -181,6 +181,9 @@ class Todo
         }
     }
 
+    /**
+     * 删除任务。
+     */
     private function delete()
     {
         $n = $this->n;
@@ -189,9 +192,27 @@ class Todo
         }
     }
 
+    /**
+     * 编辑任务内容，如果命令行参数里面没有带任务内容，则后续过程中询问内容。
+     */
     private function edit()
     {
+        $n = $this->n;
+        if ($this->checkNum($n) && $this->checkTaskExist($n, $this->list)) {
+            $content = $this->content1;
 
+            if ($content) {
+                $this->list[$n]['content'] = $content;
+            } else {
+                echo $this->tips['origin_content_is'] . $this->list[$n]['content'] . "\n";
+
+                do {
+                    echo $this->tips['please_input_content'];
+                } while (mb_strlen($line = trim(fgets(STDIN))) === 0);
+
+                $this->list[$n]['content'] = $line;
+            }
+        }
     }
 
     /**
