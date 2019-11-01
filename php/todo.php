@@ -183,7 +183,10 @@ class Todo
 
     private function delete()
     {
-
+        $n = $this->n;
+        if ($this->checkNum($n) && $this->checkTaskExist($n, $this->list)) {
+            unset($this->list[$n]);
+        }
     }
 
     private function edit()
