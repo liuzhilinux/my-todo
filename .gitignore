@@ -98,3 +98,6 @@ Temporary Items
 
 # 保存的 db 文件不同步到仓库。
 */db
+
+# Java 编译后的 .class 文件不同步到仓库。
+*/*.class
