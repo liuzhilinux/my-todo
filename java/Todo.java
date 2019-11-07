@@ -49,6 +49,19 @@ public class Todo {
     private String content1;
 
     /**
+     * 任务类型。
+     */
+    private class Task {
+        private String content;
+        private boolean status;
+
+        private Task(String content, boolean status) {
+            this.content = content;
+            this.status = status;
+        }
+    }
+
+    /**
      * 主函数。
      * 
      * @param args
@@ -65,5 +78,10 @@ public class Todo {
     private void init() {
         int[] myArr = new int[10];
 
+        Task t = new Task("My Task", true);
+
+        System.out.println(t.content);
+        System.out.println(t.status);
     }
+
 }
