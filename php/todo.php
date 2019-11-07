@@ -13,7 +13,7 @@ class Todo
     private $dbPath = __DIR__ . DIRECTORY_SEPARATOR . 'db';
 
     /**
-     * @var string 动作.
+     * @var string 动作。
      */
     private $verb;
 
