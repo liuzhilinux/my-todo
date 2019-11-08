@@ -1,8 +1,12 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.BufferedWriter;
 
 /**
  * Ｔｏｄｏ 类。
@@ -100,12 +104,9 @@ public class Todo {
     }
 
     private void init() {
-
-    }
-
-    private void save() {
         String dbPath = this.dbPath;
         File dbFile = new File(this.dbPath);
+        String json = null;
 
         if (!dbFile.exists()) {
             try {
@@ -116,11 +117,37 @@ public class Todo {
         }
 
         try {
+            StringBuffer sb = new StringBuffer();
+            FileInputStream fis = new FileInputStream(dbPath);
+            InputStreamReader isr = new InputStreamReader(fis, "UTF-8");
+            BufferedReader reader = new BufferedReader(isr);
+
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+
+            json = sb.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(json);
+    }
+
+    private void save() {
+        String dbPath = this.dbPath;
+
+        try {
             String json = "[]";
-            FileOutputStream writerStream = new FileOutputStream(dbPath);
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(writerStream, "UTF-8"));
+            FileOutputStream fos = new FileOutputStream(dbPath);
+            OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
+            BufferedWriter writer = new BufferedWriter(osw);
+
             writer.write(json);
             writer.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
