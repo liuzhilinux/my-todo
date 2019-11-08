@@ -1,4 +1,8 @@
-import java.util.Set;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.BufferedWriter;
 
 /**
  * Ｔｏｄｏ 类。
@@ -26,27 +30,27 @@ public class Todo {
     /**
      * 动作。
      */
-    private String verb;
+    private String verb = null;
 
     /**
      * 任务序号。
      */
-    private int n;
+    private int n = -1;
 
     /**
      * 任务内容。
      */
-    private String content;
+    private String content = null;
 
     /**
      * 移动步数。
      */
-    private int n1;
+    private int n1 = -1;
 
     /**
      * 要修改成的任务内容。
      */
-    private String content1;
+    private String content1 = null;
 
     /**
      * 任务类型。
@@ -67,21 +71,58 @@ public class Todo {
      * @param args
      */
     public static void main(String[] args) {
-        Todo todo = new Todo();
+        Todo todo = new Todo(args);
+
         todo.init();
+
+        todo.save();
     }
 
-    public Todo() {
+    public Todo(String[] args) {
+        String dir = this.getClass().getResource("").getPath();
+        this.dbPath = dir + "db";
 
+        for (int i = 0; i < args.length; i++) {
+            switch (i) {
+            case 0:
+                this.verb = args[i];
+                break;
+            case 1:
+                this.n = Integer.parseInt(args[i]) - 1;
+                this.content = args[i];
+                break;
+            case 2:
+                this.n1 = Integer.parseInt(args[i]);
+                this.content1 = args[i];
+                break;
+            }
+        }
     }
 
     private void init() {
-        int[] myArr = new int[10];
 
-        Task t = new Task("My Task", true);
-
-        System.out.println(t.content);
-        System.out.println(t.status);
     }
 
+    private void save() {
+        String dbPath = this.dbPath;
+        File dbFile = new File(this.dbPath);
+
+        if (!dbFile.exists()) {
+            try {
+                dbFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            String json = "[]";
+            FileOutputStream writerStream = new FileOutputStream(dbPath);
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(writerStream, "UTF-8"));
+            writer.write(json);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

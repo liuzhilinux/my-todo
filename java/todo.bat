@@ -3,6 +3,7 @@
 SET here=%~dp0
 
 del %here%Todo.class
+del %here%Todo$Task.class
 
 javac "%here%Todo.java" -encoding UTF-8 -d "%here:~0,-1%"
 
