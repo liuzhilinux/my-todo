@@ -67,6 +67,12 @@ public class Todo {
             this.content = content;
             this.status = status;
         }
+
+        public String toString() {
+            String str = "{\"content\":\"" + this.content + "\",\"status\":" + (this.status ? "true" : "false") + "}";
+
+            return str;
+        }
     }
 
     /**
@@ -82,7 +88,10 @@ public class Todo {
         todo.save();
     }
 
-    public Todo(String[] args) {
+    /**
+     * 构造器，初始化输入参数。
+     */
+    private Todo(String[] args) {
         String dir = this.getClass().getResource("").getPath();
         this.dbPath = dir + "db";
 
@@ -103,6 +112,9 @@ public class Todo {
         }
     }
 
+    /**
+     * 初始化，获取数据库数据。
+     */
     private void init() {
         String dbPath = this.dbPath;
         File dbFile = new File(this.dbPath);
@@ -135,6 +147,9 @@ public class Todo {
         System.out.println(json);
     }
 
+    /**
+     * 保存数据到数据库。
+     */
     private void save() {
         String dbPath = this.dbPath;
 
