@@ -301,7 +301,7 @@ class Todo
      */
     private function checkNum($n)
     {
-        if (empty($n) || is_nan($n)) {
+        if (empty($n + 1) || is_nan($n)) {
             $this->validated = false;
             exit($this->tips['num_err'] . "\n");
         }
