@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 
 /**
  * Ｔｏｄｏ 类。
@@ -57,17 +58,37 @@ public class Todo {
     private String content1 = null;
 
     /**
+     * 任务列表。
+     */
+    private ArrayList<Task> list = new ArrayList<Task>();
+
+    /**
      * 任务类型。
      */
     private class Task {
+        /**
+         * 任务内容。
+         */
         private String content;
+
+        /**
+         * 任务是否完成的状态标记。
+         */
         private boolean status;
 
+        /**
+         * 初始化一个任务。
+         * @param content
+         * @param status
+         */
         private Task(String content, boolean status) {
             this.content = content;
             this.status = status;
         }
 
+        /**
+         * 将任务对象转成 JSON 格式。
+         */
         public String toString() {
             String str = "{\"content\":\"" + this.content + "\",\"status\":" + (this.status ? "true" : "false") + "}";
 
@@ -85,7 +106,7 @@ public class Todo {
 
         todo.init();
 
-        todo.save();
+        // todo.save();
     }
 
     /**
@@ -144,7 +165,14 @@ public class Todo {
             e.printStackTrace();
         }
 
-        System.out.println(json);
+        json = json.trim().substring(13, json.length() - 3);
+        String[] list = json.split("},[{]\"content\":\"");
+
+        for (String item : list) {
+            String[] tmp = item.split("\",\"status\":");
+            Task task = new Task(tmp[0], tmp[1].equals("true"));
+            this.list.add(task);
+        }
     }
 
     /**
