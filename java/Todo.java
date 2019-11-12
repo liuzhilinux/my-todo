@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Ｔｏｄｏ 类。
@@ -106,6 +107,8 @@ public class Todo {
         Todo todo = new Todo(args);
 
         todo.init();
+
+        todo.display();
 
         todo.save();
     }
@@ -214,5 +217,37 @@ public class Todo {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 显示任务列表。
+     */
+    private void display() {
+        System.out.println();
+        Task[] list = new Task[this.list.size()];
+        this.list.toArray(list);
+
+        int listLen = list.length;
+        String listLenStr =  "" + listLen;
+        int idxLen = listLenStr.length();
+        StringBuffer sb = new StringBuffer();
+
+        for (int i = 0; i < listLen; i++) {
+            int idx = i + 1;
+            String idxStr = "" + idx;
+
+            for (int j = 0; j < idxLen - idxStr.length(); j++) {
+                sb.append(" ");
+            }
+
+            sb.append(idxStr);
+            sb.append(". ");
+            Task task = list[i];
+            sb.append(task.status ? "[x] " : "[_] ");
+            sb.append(task.content);
+            sb.append("\n");
+        }
+
+        System.err.println(sb);
     }
 }
