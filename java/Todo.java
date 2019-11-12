@@ -60,7 +60,7 @@ public class Todo {
     /**
      * 任务列表。
      */
-    private ArrayList<Task> list = new ArrayList<Task>();
+    private ArrayList<Task> list;
 
     /**
      * 任务类型。
@@ -78,6 +78,7 @@ public class Todo {
 
         /**
          * 初始化一个任务。
+         * 
          * @param content
          * @param status
          */
@@ -106,7 +107,7 @@ public class Todo {
 
         todo.init();
 
-        // todo.save();
+        todo.save();
     }
 
     /**
@@ -168,6 +169,8 @@ public class Todo {
         json = json.trim().substring(13, json.length() - 3);
         String[] list = json.split("},[{]\"content\":\"");
 
+        this.list = new ArrayList<Task>(list.length + 10);
+
         for (String item : list) {
             String[] tmp = item.split("\",\"status\":");
             Task task = new Task(tmp[0], tmp[1].equals("true"));
@@ -181,8 +184,25 @@ public class Todo {
     private void save() {
         String dbPath = this.dbPath;
 
+        Task[] list = new Task[this.list.size()];
+        this.list.toArray(list);
+
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("[");
+
+        for (int i = 0; i < list.length; i++) {
+            sb.append(list[i]);
+
+            if (i < list.length - 1) {
+                sb.append(",");
+            }
+        }
+
+        sb.append("]");
+
         try {
-            String json = "[]";
+            String json = sb.toString();
             FileOutputStream fos = new FileOutputStream(dbPath);
             OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
             BufferedWriter writer = new BufferedWriter(osw);
