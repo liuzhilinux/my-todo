@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
 
 /**
  * Ｔｏｄｏ 类。
@@ -128,7 +130,7 @@ public class Todo {
             todo.delete(n, list);
             break;
         case "edit":
-
+            todo.edit(n, content1, list);
             break;
         case "undone":
 
@@ -158,6 +160,8 @@ public class Todo {
 
     /**
      * 构造器，初始化输入参数。
+     * 
+     * @param args 命令行参数。
      */
     private Todo(String[] args) {
         String dir = this.getClass().getResource("").getPath();
@@ -332,11 +336,48 @@ public class Todo {
     /**
      * 删除任务。
      * 
-     * @param n 要删除的任务序号。
+     * @param n    要删除的任务序号。
+     * @param list 任务列表。
      */
     private void delete(int n, ArrayList<Task> list) {
         if (this.checkNum(n) && this.checkTaskExist(n, list)) {
             this.list.remove(n);
+        }
+    }
+
+    /**
+     * 编辑任务内容，如果命令行参数里面没有带任务内容，则后续过程中询问内容。
+     * 
+     * @param n       要编辑的任务序号。
+     * @param content 命令行参数中获取到的任务内容。
+     * @param list    任务列表。
+     */
+    private void edit(int n, String content, ArrayList<Task> list) {
+        if (this.checkNum(n) && this.checkTaskExist(n, list)) {
+            Task task = list.get(n);
+
+            if (content != null && content.length() > 0) {
+                task.content = content;
+            } else {
+                Scanner scanner = new Scanner(System.in);
+                String line;
+
+                System.out.println(this.ORIGIN_CONTENT_IS + task.content);
+
+                try {
+                    do {
+                        System.out.print(this.PLEASE_INPUT_CONTENT);
+                        line = scanner.nextLine();
+                        line.trim();
+                    } while (line == null || line.length() <= 0);
+
+                    task.content = line;
+                } catch (NoSuchElementException e) {
+                    // ...
+                } catch (IllegalStateException e) {
+                    // ...
+                }
+            }
         }
     }
 
