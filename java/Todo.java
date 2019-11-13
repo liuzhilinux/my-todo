@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  * Ｔｏｄｏ 类。
@@ -80,8 +79,8 @@ public class Todo {
         /**
          * 初始化一个任务。
          * 
-         * @param content
-         * @param status
+         * @param content 任务内容。
+         * @param status 任务状态，true 为已完成， false 为未完成。
          */
         private Task(String content, boolean status) {
             this.content = content;
@@ -101,16 +100,31 @@ public class Todo {
     /**
      * 主函数。
      * 
-     * @param args
+     * @param args 命令行参数。
      */
     public static void main(String[] args) {
         Todo todo = new Todo(args);
+        String verb = todo.verb;
+        boolean noAction = false;
 
         todo.init();
 
+        switch (verb) {
+        case "add":
+            todo.add();
+            break;
+        default:
+            noAction = true;
+            System.out.println(todo.YOUR_VERB_IS + verb);
+            System.out.println(todo.I_DONT_KNOW_WHAT_YOUR_WANT);
+            break;
+        }
+
         todo.display();
 
-        todo.save();
+        if (!noAction && !verb.equals("list")) {
+            todo.save();
+        }
     }
 
     /**
@@ -126,11 +140,19 @@ public class Todo {
                 this.verb = args[i];
                 break;
             case 1:
-                this.n = Integer.parseInt(args[i]) - 1;
+                try {
+                    this.n = Integer.parseInt(args[i]) - 1;
+                } catch (NumberFormatException e) {
+                    // ...
+                }
                 this.content = args[i];
                 break;
             case 2:
-                this.n1 = Integer.parseInt(args[i]);
+                try {
+                    this.n1 = Integer.parseInt(args[i]);
+                } catch (NumberFormatException e) {
+                    // ...
+                }
                 this.content1 = args[i];
                 break;
             }
@@ -228,7 +250,7 @@ public class Todo {
         this.list.toArray(list);
 
         int listLen = list.length;
-        String listLenStr =  "" + listLen;
+        String listLenStr = "" + listLen;
         int idxLen = listLenStr.length();
         StringBuffer sb = new StringBuffer();
 
@@ -245,9 +267,41 @@ public class Todo {
             Task task = list[i];
             sb.append(task.status ? "[x] " : "[_] ");
             sb.append(task.content);
-            sb.append("\n");
+
+            if (i < listLen - 1) {
+                sb.append("\n");
+            }
         }
 
         System.err.println(sb);
+    }
+
+    /**
+     * 添加任务。
+     */
+    private void add() {
+        String content = this.content;
+
+        if (this.checkContent(content)) {
+            Task task = new Task(content, false);
+            this.list.add(task);
+        }
+    }
+
+    /* ================ 验证方法 ================ */
+
+    /**
+     * 检查任务内容是否填写。
+     * 
+     * @param content 任务内容。
+     * @return true
+     */
+    private boolean checkContent(String content) {
+        if (content == null || content.length() <= 0) {
+            System.out.println(this.NO_CONTENT_ERR);
+            System.exit(0);
+        }
+
+        return true;
     }
 }
