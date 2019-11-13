@@ -80,7 +80,7 @@ public class Todo {
          * 初始化一个任务。
          * 
          * @param content 任务内容。
-         * @param status 任务状态，true 为已完成， false 为未完成。
+         * @param status  任务状态，true 为已完成， false 为未完成。
          */
         private Task(String content, boolean status) {
             this.content = content;
@@ -109,9 +109,38 @@ public class Todo {
 
         todo.init();
 
+        int n = todo.n;
+        String content = todo.content;
+        int n1 = todo.n1;
+        String content1 = todo.content1;
+        ArrayList<Task> list = todo.list;
+
         switch (verb) {
         case "add":
-            todo.add();
+            todo.add(content);
+            break;
+        case "list":
+            break;
+        case "done":
+            todo.done(n);
+            break;
+        case "delete":
+            todo.delete(n, list);
+            break;
+        case "edit":
+
+            break;
+        case "undone":
+
+            break;
+        case "moveup":
+
+            break;
+        case "movedown":
+
+            break;
+        case "clearall":
+
             break;
         default:
             noAction = true;
@@ -278,13 +307,36 @@ public class Todo {
 
     /**
      * 添加任务。
+     * 
+     * @param content 任务内容。
      */
-    private void add() {
-        String content = this.content;
-
+    private void add(String content) {
         if (this.checkContent(content)) {
             Task task = new Task(content, false);
             this.list.add(task);
+        }
+    }
+
+    /**
+     * 标记任务为完成。
+     * 
+     * @param n 要标记的任务序号。
+     */
+    private void done(int n) {
+        if (this.checkNum(n)) {
+            Task task = this.list.get(n);
+            task.status = true;
+        }
+    }
+
+    /**
+     * 删除任务。
+     * 
+     * @param n 要删除的任务序号。
+     */
+    private void delete(int n, ArrayList<Task> list) {
+        if (this.checkNum(n) && this.checkTaskExist(n, list)) {
+            this.list.remove(n);
         }
     }
 
@@ -299,6 +351,37 @@ public class Todo {
     private boolean checkContent(String content) {
         if (content == null || content.length() <= 0) {
             System.out.println(this.NO_CONTENT_ERR);
+            System.exit(0);
+        }
+
+        return true;
+    }
+
+    /**
+     * 检查任务序号是否合法。
+     * 
+     * @param n 任务序号。
+     * @return true;
+     */
+    private boolean checkNum(int n) {
+        if (n <= -1) {
+            System.out.println(this.NUM_ERR);
+            System.exit(0);
+        }
+
+        return true;
+    }
+
+    /**
+     * 检查列表中是否存在对应序号的任务。
+     * 
+     * @param n    任务序号。
+     * @param list 任务列表。
+     * @return true
+     */
+    private boolean checkTaskExist(int n, ArrayList<Task> list) {
+        if (n <= -1 || list == null || list.size() <= n) {
+            System.out.println(this.TASK_NO_EXIST_ERR);
             System.exit(0);
         }
 
