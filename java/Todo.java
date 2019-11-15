@@ -151,7 +151,9 @@ public class Todo {
             break;
         }
 
-        todo.display();
+        if (!verb.equals("clearall")) {
+            todo.display();
+        }
 
         if (!noAction && !verb.equals("list")) {
             todo.save();
@@ -226,15 +228,20 @@ public class Todo {
             e.printStackTrace();
         }
 
-        json = json.trim().substring(13, json.length() - 3);
-        String[] list = json.split("},[{]\"content\":\"");
+        json = json.trim();
 
-        this.list = new ArrayList<Task>(list.length + 10);
+        if (json.equals("[]")) {
+            this.list = new ArrayList<Task>(10);
+        } else {
+            json = json.trim().substring(13, json.length() - 3);
+            String[] list = json.split("},[{]\"content\":\"");
+            this.list = new ArrayList<Task>(list.length + 10);
 
-        for (String item : list) {
-            String[] tmp = item.split("\",\"status\":");
-            Task task = new Task(tmp[0], tmp[1].equals("true"));
-            this.list.add(task);
+            for (String item : list) {
+                String[] tmp = item.split("\",\"status\":");
+                Task task = new Task(tmp[0], tmp[1].equals("true"));
+                this.list.add(task);
+            }
         }
     }
 
@@ -428,7 +435,7 @@ public class Todo {
     private void movedown(int n, int n1, ArrayList<Task> list) {
         if (this.checkNum(n) && this.checkStep(n1) && this.checkTaskExist(n, list)) {
             int idx = n + n1;
-            idx = idx > list.length ? list.length : idx;
+            idx = idx > list.size() ? list.size() : idx;
             Task task = list.get(n);
             Task task2 = list.get(idx);
             list.set(idx, task);
@@ -442,7 +449,31 @@ public class Todo {
      * @param list 任务列表。
      */
     private void clearall(ArrayList<Task> list) {
-        list.clear();
+        Scanner scanner = new Scanner(System.in);
+        String line;
+
+        try {
+            do {
+                System.out.print(this.ARE_YOU_SURE_CLEAR_ALL);
+                line = scanner.nextLine();
+                line.trim();
+            } while (line == null || line.length() <= 0);
+
+            line.toLowerCase();
+
+            if (line.equals("n") || line.equals("no")) {
+                // Do noting.
+            } else if (line.equals("y") || line.equals("yes")) {
+                list.clear();
+            }
+
+        } catch (NoSuchElementException e) {
+            // ...
+        } catch (IllegalStateException e) {
+            // ...
+        }
+
+        scanner.close();
     }
 
     /* ================ 验证方法 ================ */
