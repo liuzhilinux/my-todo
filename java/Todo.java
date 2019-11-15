@@ -119,12 +119,12 @@ public class Todo {
 
         switch (verb) {
         case "add":
-            todo.add(content);
+            todo.add(content, list);
             break;
         case "list":
             break;
         case "done":
-            todo.done(n);
+            todo.done(n, list);
             break;
         case "delete":
             todo.delete(n, list);
@@ -313,11 +313,12 @@ public class Todo {
      * 添加任务。
      * 
      * @param content 任务内容。
+     * @param list 任务列表。
      */
-    private void add(String content) {
+    private void add(String content, ArrayList<Task> list) {
         if (this.checkContent(content)) {
             Task task = new Task(content, false);
-            this.list.add(task);
+            list.add(task);
         }
     }
 
@@ -325,10 +326,11 @@ public class Todo {
      * 标记任务为完成。
      * 
      * @param n 要标记的任务序号。
+     * @param list 任务列表。
      */
-    private void done(int n) {
+    private void done(int n, ArrayList<Task> list) {
         if (this.checkNum(n)) {
-            Task task = this.list.get(n);
+            Task task = list.get(n);
             task.status = true;
         }
     }
