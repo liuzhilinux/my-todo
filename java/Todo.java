@@ -133,16 +133,16 @@ public class Todo {
             todo.edit(n, content1, list);
             break;
         case "undone":
-
+            todo.undone(n, list);
             break;
         case "moveup":
-
+            todo.moveup(n, n1, list);
             break;
         case "movedown":
-
+            todo.movedown(n, n1, list);
             break;
         case "clearall":
-
+            todo.clearall(list);
             break;
         default:
             noAction = true;
@@ -220,6 +220,8 @@ public class Todo {
             }
 
             json = sb.toString();
+
+            reader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -313,7 +315,7 @@ public class Todo {
      * 添加任务。
      * 
      * @param content 任务内容。
-     * @param list 任务列表。
+     * @param list    任务列表。
      */
     private void add(String content, ArrayList<Task> list) {
         if (this.checkContent(content)) {
@@ -325,13 +327,26 @@ public class Todo {
     /**
      * 标记任务为完成。
      * 
-     * @param n 要标记的任务序号。
+     * @param n    要标记的任务序号。
      * @param list 任务列表。
      */
     private void done(int n, ArrayList<Task> list) {
         if (this.checkNum(n)) {
             Task task = list.get(n);
             task.status = true;
+        }
+    }
+
+    /**
+     * 标记任务为未完成。
+     * 
+     * @param n    要表计的任务序号。
+     * @param list 任务列表。
+     */
+    private void undone(int n, ArrayList<Task> list) {
+        if (this.checkNum(n)) {
+            Task task = list.get(n);
+            task.status = false;
         }
     }
 
@@ -343,7 +358,7 @@ public class Todo {
      */
     private void delete(int n, ArrayList<Task> list) {
         if (this.checkNum(n) && this.checkTaskExist(n, list)) {
-            this.list.remove(n);
+            list.remove(n);
         }
     }
 
@@ -379,8 +394,55 @@ public class Todo {
                 } catch (IllegalStateException e) {
                     // ...
                 }
+
+                scanner.close();
             }
         }
+    }
+
+    /**
+     * 向上移动任务。
+     * 
+     * @param n    要向上移动的任务序号。
+     * @param n1   要移动的步数。
+     * @param list 任务列表。
+     */
+    private void moveup(int n, int n1, ArrayList<Task> list) {
+        if (this.checkNum(n) && this.checkStep(n1) && this.checkTaskExist(n, list)) {
+            int idx = n - n1;
+            idx = idx < 0 ? 0 : idx;
+            Task task = list.get(n);
+            Task task2 = list.get(idx);
+            list.set(idx, task);
+            list.set(n, task2);
+        }
+    }
+
+    /**
+     * 向下移动任务。
+     * 
+     * @param n    要向下移动的任务序号。
+     * @param n1   要移动的步数。
+     * @param list 任务列表。
+     */
+    private void movedown(int n, int n1, ArrayList<Task> list) {
+        if (this.checkNum(n) && this.checkStep(n1) && this.checkTaskExist(n, list)) {
+            int idx = n + n1;
+            idx = idx > list.length ? list.length : idx;
+            Task task = list.get(n);
+            Task task2 = list.get(idx);
+            list.set(idx, task);
+            list.set(n, task2);
+        }
+    }
+
+    /**
+     * 清除所有任务。
+     * 
+     * @param list 任务列表。
+     */
+    private void clearall(ArrayList<Task> list) {
+        list.clear();
     }
 
     /* ================ 验证方法 ================ */
@@ -425,6 +487,21 @@ public class Todo {
     private boolean checkTaskExist(int n, ArrayList<Task> list) {
         if (n <= -1 || list == null || list.size() <= n) {
             System.out.println(this.TASK_NO_EXIST_ERR);
+            System.exit(0);
+        }
+
+        return true;
+    }
+
+    /**
+     * 检查移动步数是否合法。
+     * 
+     * @param n1
+     * @return true
+     */
+    private boolean checkStep(int n1) {
+        if (n1 <= -1) {
+            System.out.println(this.STEP_ERR);
             System.exit(0);
         }
 
