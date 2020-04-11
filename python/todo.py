@@ -3,11 +3,19 @@
 
 import sys
 
+class Todo(object):
+
+    def __init__(self):
+        print('Hola Mundo!')
+
+        s1 = input('> ')
+        print(s1)
+
+        print(sys.argv)
+
+
+
+
+
 if __name__ == '__main__':
-    print('Hola Mundo!')
-
-    s1 = input('> ')
-    print(s1)
-
-    print(sys.argv)
-
+    Todo()
