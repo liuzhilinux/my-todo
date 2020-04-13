@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import json
 import os
 import re
 import sys
@@ -57,6 +58,13 @@ class Todo(object):
         except:
             self.__content1 = None
 
+        # 任务列表。
+        self.list = []
+        # 是否为无效动作。
+        self.noAction = False
+        # 命令行的输入参数是否验证通过，当输入有误的情况下，不打印列表，不保存列表。
+        self.validated = True
+
         self.init()
 
         self.exec()
@@ -67,7 +75,19 @@ class Todo(object):
 
     # 初始化，获取数据库数据。
     def init(self):
-        pass
+        try:
+            with open(DB_PATH, 'r') as f:
+                self.list = json.load(f)
+        except FileNotFoundError:
+            with open(DB_PATH, 'w') as f:
+                json.dump([], f)
+        except json.decoder.JSONDecodeError:
+            self.list = []
+
+    # 保存数据到数据库。
+    def save(self):
+        with open(DB_PATH, 'w') as f:
+            json.dump(self.list, f)
 
     # 执行操作。
     def exec(self):
