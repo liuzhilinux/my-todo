@@ -64,7 +64,7 @@ class Todo(object):
     # 销毁对象前打印任务列表并保存。
     def __del__(self):
         pass
-    
+
     # 初始化，获取数据库数据。
     def init(self):
         pass
@@ -72,6 +72,7 @@ class Todo(object):
     # 执行操作。
     def exec(self):
         pass
+
 
 if __name__ == '__main__':
     Todo()
