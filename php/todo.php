@@ -144,6 +144,8 @@ class Todo
      */
     private function display()
     {
+        if ($this->noAction) return;
+
         echo "\n";
         // 保证列表中每一项任务的完成标记对齐。
         $list = $this->list;

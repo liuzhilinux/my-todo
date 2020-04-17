@@ -100,6 +100,7 @@ class Todo(object):
         content = self.__content
         content1 = self.__content1
         n = self.__n
+        n1 = self.__n1
         if verb == 'list':
             pass
         elif verb == 'add':     # 添加任务。
@@ -116,18 +117,46 @@ class Todo(object):
                 if content1 != None and len(content1) > 0:
                     pass
                 else:
-                    print(TIPS['origin_content_is'] + self.__list[n]['content'])
+                    print(TIPS['origin_content_is'] +
+                          self.__list[n]['content'])
                     while content1 == None or len(content1) <= 0:
                         content1 = input(TIPS['please_input_content'])
                 self.__list[n]['content'] = content1
         elif verb == 'undone':  # 标记任务为已完成。
             if self.__checkNum(n) and self.__checkTaskExist(n, self.__list):
                 self.__list[n]['status'] = False
-                    
-
+        elif verb == 'moveup':  # 向上移动任务。
+            if self.__checkNum(n) and self.__checkStep(n1) and self.__checkTaskExist(n, self.__list):
+                idx = n - n1
+                idx = 0 if idx < 0 else idx
+                tasks = self.__list.pop(n)
+                self.__list.insert(idx, tasks)
+        elif verb == 'movedown':    # 向下移动任务。
+            if self.__checkNum(n) and self.__checkStep(n1) and self.__checkTaskExist(n, self.__list):
+                idx = n + n1
+                listLen = len(self.__list)
+                idx = listLen if idx > listLen else idx
+                tasks = self.__list.pop(n)
+                self.__list.insert(idx, tasks)
+        elif verb == 'clearall':    # 清除所有任务。
+            answer = None
+            while answer == None or len(answer) <= 0:
+                answer = input(TIPS['are_you_sure_clear_all']).strip().lower()
+            if answer in ['n', 'no']:
+                pass
+            elif answer in ['y', 'yes']:
+                self.__list = []
+                self.__save()
+        else:
+            self.__noAction = True
+            print(TIPS['your_verb_is'] + verb)
+            print(TIPS['i_dont_know_what_your_want'])
 
     # 显示任务列表。
     def __display(self):
+        if self.__noAction:
+            return
+
         print('')
 
         idxLen = len(str(len(self.__list)))
@@ -161,6 +190,15 @@ class Todo(object):
             print(TIPS['task_no_exist_err'])
             sys.exit()
         return True
+
+    # 检查移动步数是否合法。
+    def __checkStep(self, n1):
+        if n1 == None or not n1 >= 0:
+            self.__validated = False
+            print(TIPS['step_err'])
+            sys.exit()
+        return True
+
 
 if __name__ == '__main__':
     Todo()
