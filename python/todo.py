@@ -31,7 +31,7 @@ class Todo(object):
         # 类似 JavaScript 的 parseInt 函数。
         def parseInt(s):
             try:
-                return re.match(r'^\d+', s).group(0)
+                return int(re.match(r'^\d+', s).group(0))
             except:
                 return 0
 
@@ -42,7 +42,7 @@ class Todo(object):
         except:
             self.__verb = None
         try:
-            self.__n = parseInt(args[2])
+            self.__n = parseInt(args[2]) - 1
         except:
             self.__n = None
         try:
@@ -97,12 +97,34 @@ class Todo(object):
     def __exec(self):
         verb = self.__verb
 
+        content = self.__content
+        content1 = self.__content1
+        n = self.__n
         if verb == 'list':
             pass
-        elif verb == 'add':
-            content = self.__content
+        elif verb == 'add':     # 添加任务。
             if self.__checkContent(content):
                 self.__list.append({"content": content, "status": False})
+        elif verb == 'done':    # 标记任务为完成。
+            if self.__checkNum(n) and self.__checkTaskExist(n, self.__list):
+                self.__list[n]['status'] = True
+        elif verb == 'delete':  # 删除任务。
+            if self.__checkNum(n) and self.__checkTaskExist(n, self.__list):
+                self.__list.pop(n)
+        elif verb == 'edit':    # 编辑任务内容，如果命令行参数里面没有带任务内容，则后续过程中询问内容。
+            if self.__checkNum(n) and self.__checkTaskExist(n, self.__list):
+                if content1 != None and len(content1) > 0:
+                    pass
+                else:
+                    print(TIPS['origin_content_is'] + self.__list[n]['content'])
+                    while content1 == None or len(content1) <= 0:
+                        content1 = input(TIPS['please_input_content'])
+                self.__list[n]['content'] = content1
+        elif verb == 'undone':  # 标记任务为已完成。
+            if self.__checkNum(n) and self.__checkTaskExist(n, self.__list):
+                self.__list[n]['status'] = False
+                    
+
 
     # 显示任务列表。
     def __display(self):
@@ -124,6 +146,21 @@ class Todo(object):
             sys.exit()
         return True
 
+    # 检查任务序号是否合法。
+    def __checkNum(self, n):
+        if n == None or not n >= 0:
+            self.__validated = False
+            print(TIPS['num_err'])
+            sys.exit()
+        return True
+
+    # 检查列表中是否存在对应序号的任务。
+    def __checkTaskExist(self, n, list):
+        if n >= len(list):
+            self.__validated = False
+            print(TIPS['task_no_exist_err'])
+            sys.exit()
+        return True
 
 if __name__ == '__main__':
     Todo()
