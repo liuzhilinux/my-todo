@@ -11,14 +11,14 @@
 
 这个项目是根据方应杭老师在“写代码啦”上发布的免费课程《Node.js 入门》做的练手项目。关于这个课程，可以点击[这里](https://xiedaimala.com/courses/75e749fb-909e-4e10-9212-b6e725a6d35f#/common "Node.js 入门 - 写代码啦！")了解。
 
-相对比原课程中的案例，我做了如下修改：
+相对比原课程中的案例，我做了如下补充：
 
 1. `todo` 命令添加 `undone` 、 `moveup` 、 `movedown` 、`clearall` 指令；
 2. `edit` 指令支持通过命令行交互的方式编辑任务；
 3. 采用 `Node.js `、 `PHP` 、 `Java` 、`Python` 实现一致的功能，包括 `todo` 命令的用法和 `db` 保存数据格式的统一；
 4. 解决了 Windows 下无法添加 `todo` 命令到别名的问题。
 
-这个项目以及这份文档是面向零编程基础的，同时有接触过命令行的朋友，所以这份文档会尽量写得通俗易懂，这样难免会有些啰嗦，但对新手来说，足够细致的说明
+这个项目以及这份文档是面向零编程基础的，同时有接触过命令行的朋友，所以这份文档会尽量写得通俗易懂，这样难免会有些啰嗦，但对新手来说，足够细致的说明。
 
 
 
@@ -44,7 +44,7 @@
    $ cd my-todo/node
    ```
 
-3. 可以开始通过命令行操作了，以下是所有命令的用例：
+3. 现在可以开始通过命令行操作了，以下是所有命令的用例：
 
    > 克隆项目到本地，并添加 3 个任务（ `add` ）：
    >
@@ -87,10 +87,11 @@
 
 第一种方法是需要修改注册表，这种方式不太友好，所以我选择了第二种方法，以下是演示步骤，还是以 `Node.js` 版本为例：
 
-1. 将项目克隆到本地，这里假设你的工作目录为 `aaa` ：
+1. 将项目克隆到本地，这里假设你的工作目录为 `C:\WorkSpaces\Test\20191011` ：
 
    ```powershell
-   > cd aaa
+   > C:
+   > cd C:\WorkSpaces\Test\20191011
    > git clone git@github.com:liuzhilinux/my-todo.git
    > cd my-todo\node
    ```
@@ -149,24 +150,70 @@
 
    ![步骤 6](_img/step-1-6.png)
 
-   > 接下来依次点确定关闭窗口。
+   > 接下来依次点击确定关闭窗口。
 
 4. 全局 `todo` 命令配置完成，现在可以试试看了，记得**重新打开命令行**才有效果哦。
 
    ![例 5](_img/example_5.png)
 
+## 关于 `Java` 版本的编译与运行
+
+下面是 `java/todo.bat` 里面的内容：
+
+```powershell
+@echo off
+
+REM 设置当前目录
+SET here=%~dp0
+
+REM 删除编译生成的 class 文件
+REM 正式使用可以注释这 3 行
+del %here%Todo.class
+del %here%Todo$1.class
+del %here%Todo$Task.class
+
+REM 编译 java 源代码
+REM 正式使用可以注释这行
+javac "%here%Todo.java" -encoding UTF-8 -d "%here:~0,-1%"
+
+REM 执行 java todo 命令
+java --class-path "%here:~0,-1%" Todo %1 %2 %3
+
+```
+
 
 
 ## 写在后面
 
-
+学习编程，最重要的是兴趣，然后是实践，最后是思考。只要对编程有兴趣，你才会坚持学习下去，也只有在实践中，你的技术才会进步，而最后思考，是最终使你达到不一样的境界。
 
 
 
 ## 参见
 
+`JavaScript & Node.js`
+
 1. [Node.js 入门 - 写代码啦！](https://xiedaimala.com/courses/75e749fb-909e-4e10-9212-b6e725a6d35f#/common "Node.js 入门 - 写代码啦！")
-2. [Node.js 官方英文文档](https://nodejs.org/api/)
-3. [Node.js 中文文档](http://nodejs.cn/api/ "API 文档 | Node.js 中文网")
-4. 
+2. [JavaScript | MDN](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript)
+3. [Node.js 官方英文文档](https://nodejs.org/api/)
+4. [Node.js 中文文档](http://nodejs.cn/api/ "API 文档 | Node.js 中文网")
+5. [JavaScript教程 - 廖雪峰的官方网站](https://www.liaoxuefeng.com/wiki/1022910821149312)
+6. [FreeCodeCamp 国外版](https://www.freecodecamp.org/)
+7. [FreeCodeCamp 中文 one](https://www.freecodecamp.one/)
+
+`Python`
+
+1. [Python 3 官方英文文档](https://docs.python.org/3/)
+2. [Python 教程 - 廖雪峰的官方网站](https://www.liaoxuefeng.com/wiki/1016959663602400)
+
+`Java`
+
+1. [JDK 11 Documentation](https://docs.oracle.com/en/java/javase/11/)
+2. [Java教程 - 廖雪峰的官方网站](https://www.liaoxuefeng.com/wiki/1252599548343744)
+
+`PHP`
+
+1. [PHP 手册](https://www.php.net/manual/zh/)
+
+
 
